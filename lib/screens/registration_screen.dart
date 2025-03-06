@@ -3,6 +3,7 @@ import 'package:flash_chat_foo/components/rounded_button.dart';
 import 'package:flash_chat_foo/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat_foo/screens/chat_screen.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -14,14 +15,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _auth = FirebaseAuth.instance;
   String? email;
   String? password;
+  bool showSpinner = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
-        child: SingleChildScrollView(
+      body: ModalProgressHUD(
+        inAsyncCall: showSpinner,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.0),
+          child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -69,6 +73,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 color: Colors.blueAccent,
                 title: 'Register',
                 onPressed: () async {
+                  setState(() {
+                    showSpinner = true;
+                  });
                   try {
                     final newUser = await _auth.createUserWithEmailAndPassword(
                       email: email!,
@@ -79,11 +86,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     }
                   } catch (e) {
                     print(e);
+                  } finally {
+                    setState(() {
+                      showSpinner = false;
+                    });
                   }
                 },
               ),
               SizedBox(height: 20.0),
             ],
+            ),
           ),
         ),
       ),
