@@ -1,0 +1,1 @@
+C:\src\flash_chat_foo\build\app\intermediates\cxx\Debug\2d5a3q27\obj\x86
